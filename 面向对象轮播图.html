@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		*{margin:0;padding: 0;}
+		ul li{list-style: none;}
+		.banner{position: relative;width: 800px;height: 500px;margin:50px auto;overflow: hidden;}
+		a{text-decoration: none;}
+		#list{position: absolute;left:0;}
+		#list li{float: left;}
+		#list img{height:500px;}
+		#btn a{position:absolute;display: block;width: 80px;height:60px;background:rgba(102,102,102,.3);color:#666666;font-size: 50px;font-style:bold;line-height: 60px;text-align: center;}
+		#btn a:nth-child(1){
+			left: 0;
+			top:45%;
+		}
+		#btn a:nth-child(2){
+			right: 0;
+			top:45%;
+		}
+		#circle{width:200px;height:50px;position: absolute;bottom:0;left:40%;}
+		#circle a{display: block;width: 25px;height: 25px;border-radius: 50%;float:left;margin-left:10px;background:#999;}
+		#circle .active{background:yellow;}
+	</style>
+	<script src="pool.js"></script>
+</head>
+<body>
+<div class="banner">
+	<ul id="list">
+		<li><img src="images/1.jpg"></li>
+		<li><img src="images/2.jpg"></li>
+		<li><img src="images/3.jpg"></li>
+		<li><img src="images/4.jpg"></li>
+	</ul>
+	<div id="btn">
+		<a href="##">&lt;</a>
+		<a href="##">&gt;</a>
+	</div>
+	<div id="circle">
+		<a href="##" class="active"></a>
+		<a href="##"></a>
+		<a href="##"></a>
+		<a href="##"></a>
+	</div>
+</div>
+</body>
+</html>
+<script>
+	var lunbo = {
+		oBanner :document.querySelector('.banner'),
+		oList:document.getElementById('list'),
+		oLi:document.getElementById('list').children,
+		aA : document.getElementById('btn').children,
+		aCir :document.getElementById('circle').children,
+		iNow : 0,
+		timer:null,
+		init:function(){
+			this.li = this.oLi[0].cloneNode(true),
+			this.oList.appendChild(this.li),
+			this.oList.style.width = this.oLi.length*this.oLi[0].offsetWidth+'px';
+			this.start();
+		},
+		start:function(){
+			this.autoplay();
+			this.left();
+			this.right();
+		},
+		//实现无缝轮播
+		imgmove:function(){
+			if(this.iNow==this.oLi.length){
+				this.iNow=1;
+				this.oList.style.left=0+'px';
+			}
+			move(this.oList,{'left':this.iNow*-this.oLi[0].offsetWidth})
+			this.tab();
+		},
+		//自动播放
+		autoplay:function(){
+			var _this = this;
+			this.timer=setInterval(function(){
+				_this.iNow++;
+				_this.imgmove();
+			},1000);
+			this.fn1();
+			this.fn2();
+		},
+		fn1:function(){
+			var _this = this;
+			this.oBanner.onmouseover=function(){
+				clearInterval(_this.timer);
+			}
+		},
+		fn2:function(){
+			var _this = this;
+			this.oBanner.onmouseout=function(){
+				_this.timer=setInterval(function(){
+					_this.iNow++;
+					_this.imgmove();
+				},1000)
+			}
+		},
+		tab:function(){
+			for(var i=0;i<this.aCir.length;i++){
+				this.aCir[i].className='';
+			}
+			this.aCir[this.iNow==this.oLi.length-1?0:this.iNow].className='active';
+		},
+		left:function(){
+			var _this = this;
+			this.aA[0].onclick = function(){
+				if(_this.iNow==0){
+					_this.iNow=_this.oLi.length-1;
+					_this.oList.style.left =_this.iNow*-_this.oLi[0].offsetWidth+'px'
+				}
+				_this.iNow--;
+				_this.imgmove()
+			}
+		},
+		right:function(){
+			var _this = this;
+			this.aA[1].onclick = function(){
+				_this.iNow++;
+				_this.imgmove()
+			}
+		}
+
+	}
+	lunbo.init();
+</script>
+
+

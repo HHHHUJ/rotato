@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		*{margin:0;padding: 0;}
+		ul li{list-style: none;}
+		.banner{position: relative;width: 800px;height: 500px;margin:50px auto;overflow: hidden;}
+		a{text-decoration: none;}
+		#list{position: absolute;left:0;}
+		#list li{float: left;}
+		#list img{height:500px;}
+		#btn a{position:absolute;display: block;width: 80px;height:60px;background:rgba(102,102,102,.3);color:#666666;font-size: 50px;font-style:bold;line-height: 60px;text-align: center;}
+		#btn a:nth-child(1){
+			left: 0;
+			top:45%;
+		}
+		#btn a:nth-child(2){
+			right: 0;
+			top:45%;
+		}
+		#circle{width:200px;height:50px;position: absolute;bottom:0;left:40%;}
+		#circle a{display: block;width: 25px;height: 25px;border-radius: 50%;float:left;margin-left:10px;background:#999;}
+		#circle .active{background:yellow;}
+	</style>
+	<script src="pool.js"></script>
+</head>
+<body>
+<div class="banner">
+	<ul id="list">
+		<li><img src="images/1.jpg"></li>
+		<li><img src="images/2.jpg"></li>
+		<li><img src="images/3.jpg"></li>
+		<li><img src="images/4.jpg"></li>
+	</ul>
+	<div id="btn">
+		<a href="##">&lt;</a>
+		<a href="##">&gt;</a>
+	</div>
+	<div id="circle">
+		<a href="##" class="active"></a>
+		<a href="##"></a>
+		<a href="##"></a>
+		<a href="##"></a>
+	</div>
+</div>
+</body>
+</html>
+<script>
+	window.onload=function(){
+		var oBanner = document.querySelector('.banner');
+		var oList=document.getElementById('list');
+		var oLi=oList.children;
+		var aA = document.getElementById('btn').children;
+		var aCir = document.getElementById('circle').children;
+		var li = oLi[0].cloneNode(true);
+		oList.appendChild(li);
+		oList.style.width = oLi.length*oLi[0].offsetWidth+'px';
+		var iNow = 0;
+		var timer=null;
+		//自动播放
+		timer=setInterval(function(){
+			iNow++;
+			imgmove();
+		},1000)
+		//实现无缝轮播	
+		function imgmove(){
+			if(iNow==oLi.length){
+				iNow=1;
+				oList.style.left=0+'px';
+			}
+			move(oList,{'left':iNow*-oLi[0].offsetWidth})
+			tab();
+		}
+
+		//移入暂停
+		oBanner.onmouseover=function(){
+			clearInterval(timer);
+		}
+		//移出继续
+		oBanner.onmouseout=function(){
+			timer=setInterval(function(){
+				iNow++;
+				imgmove();
+			},1000)
+		}
+		//选项卡
+		function tab(){
+			for(var i=0;i<aCir.length;i++){
+				aCir[i].className='';
+			}
+			aCir[iNow==oLi.length-1?0:iNow].className='active';
+		}
+
+		//点击左键
+		aA[0].onclick = function(){
+			if(iNow==0){
+				iNow=oLi.length-1;
+				oList.style.left =iNow*-oLi[0].offsetWidth+'px'
+			}
+			iNow--;
+			imgmove()
+		}
+		//点击右键
+		aA[1].onclick = function(){
+			iNow++;
+			imgmove()
+		}
+
+	}
+</script>
